@@ -8,12 +8,11 @@ const userSchema = new Schema({
   email: String,
   phone: String,
   picture: String,
-  role: Number
+  role_fk: { type: mongoose.ObjectId, ref: 'Roles' }
+     
 });
 
-const User = mongoose.model("users", userSchema);
-
-
+const User = mongoose.model("Users", userSchema);
 
 const schema = Joi.object({
     name: Joi.string()
@@ -35,12 +34,15 @@ const schema = Joi.object({
     picture: Joi.string()
       .min(5)
       .max(500),
-    role: Joi.number()
-      .min(1)
-      .max(700)
+    role_fk: Joi.string()
+    .min(2)
+    .max(50)
+    .required(),
+       
 })
 
 
 
 exports.User = User;
 exports.userSchema = schema;
+

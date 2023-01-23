@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt")
-const {User, userSchema} = require('../schemas/userSchema')
+const {User, userSchema} = require('./userModel')
+
 const mongoose = require("mongoose");
 const jwt = require('jsonwebtoken');
 // const flatted = require('flatted/cjs');
@@ -93,7 +94,7 @@ const createAdmin = async (user) => {
 
 }
 
-const createUser = async (user) => {
+ const createUser = async (user) => {
 
   let hash = await passwordBCrypt("toto")
 
@@ -103,7 +104,7 @@ const createUser = async (user) => {
 
 
   const doc = new User(tempUser);
-  
+  console.log(doc,'doc')
   const resultEmail = await emailAlreadyExist(user.email)
 
   if(!resultEmail){
@@ -117,78 +118,40 @@ const createUser = async (user) => {
 
 // GET
 
-const findAllUser = async () => {
-  const result = await User.find().exec();
-  console.log(result ,' findAllUser')
-  
-  return result
-}
-
-const findAllAdmins = async () => {
-const result = await User.find({role:1}).exec();
-console.log(result ,' findAllAdmins')
-
-return result
-}
-
-const findAllCommonUsers = async () => {
-  const result = await User.find({role: 0}).exec();
-  console.log(result ,' findUsers')
-  
-return result
-}
-
-const suggestResult = async (guess) => {
-
-}
-
 const regExQuery = async (schema,value) => {
 
   let query = {};
-  let schemaType = ''
+  console.log(schema,'schemaoption')
 
   for (const key in value) {
     if (Object.hasOwnProperty.call(value, key)) {
       let element = value[key];
-      console.log(key, ': ',element, 'result forinloop')
-      console.log(typeof(element), 'typeofelement')
-      console.log(schema[key], 'schemakey')
-
+   
       // const rgx = (pattern) => new RegExp(`.*${pattern}.*`);
       // element = rgx(element)
 
-      // if(key == 'role'){
-        // query[key] =   parseInt(element)
-      console.log(element , typeof(String), 'dfthfh')
-      if(element === typeof(String)){
+      if(typeof element === "string"){
+        console.log('qzùmd')
         query[key] =  { $regex: element, $options: "i" } 
       }
       else{
         console.log(element, key, 'mlk')
         query[key] =  element 
       }
-
-     
-      // else if (schemaType === typeof(Int))
-          // query[key] =  { $regex: rgx(parseInt(element)), $options: "i" } 
-      // }
       console.log(query, 'query final')
     }
   };
   return query
 }
 
+const findUsersById = async (id) => {
+
+  const result = await User.findById(id) 
+  return result 
+}
+
 const findUsersByAny = async (user) => {
   
-  // const rgx = (pattern) => new RegExp(`.*${pattern}.*`);
-
-  // créer une fonction pour role et name if(user.name.length != 'undefined')
-
-  
-  console.log(user)
-
-  // let userQuery = { ...user  }
-
   userRgx = await regExQuery(userSchema,user)
   
   console.log(userRgx,'user plpol')
@@ -205,7 +168,6 @@ const findUsersByAny = async (user) => {
 
 const updateAnyUserValues = async (values) => {
 
-  const User = mongoose.model('user', User);
   console.log(values, "values")
   const result = await User.updateOne({_id: values.id}, {
   $set:
@@ -218,13 +180,16 @@ const updateAnyUserValues = async (values) => {
 
 // DELETE
 
-const deleteUserByEmail = (email_adress) => {
-  const User = mongoose.model('user', User);
-  User.remove({ email: email_adress }).then(function(){
-    console.log(`All the users with email: ${email_adress} have been deleted`); // Success
-  }).catch(function(error){
-    console.log(error); // Failure
-  });
+// const deleteUserByEmail = (email_adress) => {
+//   User.remove({ email: email_adress }).then(function(){
+//     console.log(`All the users with email: ${email_adress} have been deleted`); // Success
+//   }).catch(function(error){
+//     console.log(error); // Failure
+//   });
+// }
+const deleteUserById = (id) => {
+  const result = User.deleteOne(id)
+  return result
 }
 
 module.exports =
@@ -233,11 +198,10 @@ module.exports =
   createAdmin,
   createUser,
   connexion,
-  findAllUser,
-  findAllAdmins,
-  findAllCommonUsers,
+  findUsersById,
   findUsersByAny,
   updateAnyUserValues,
-  deleteUserByEmail
+  // deleteUserByEmail,
+  deleteUserById
 }
 

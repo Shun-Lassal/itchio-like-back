@@ -19,7 +19,8 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 // anything beginning with "/api" will go into this
-app.use('/user', require('./src/user/UserController'));
+app.use('/user', require('./src/User/UserController'));
+app.use('/roles', require('./src/Roles/RolesController'));
 
 // ROUTING
 
@@ -29,7 +30,6 @@ app.listen(port, () => {
 
 // const findTest = async () => {
 //   console.log('"mlzkjmlqkj')
-//   const customer = mongoose.model('customer');
 //   const result = await customer.find({ name: 'Le Protecteur'}).exec();
 //   console.log(result ,' srmlrkjmlkj')
 //   return result

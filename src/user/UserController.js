@@ -1,25 +1,24 @@
 
-const userServices = require('./services/UserServices')
-const { User, userSchema } = require("./schemas/userSchema");
+const UserRepository = require('./UserRepository')
+const { User, userSchema } = require("./userModel");
 const { itErrors, enErrors } = require('../const/customError');
 var router = require('express').Router();
 
 // in this case I get the language tag from a Localhost. 
 // my two possible tags are just 'it' and 'en'
-router.get('/findany', async (req,res) => {
-  const result = await userServices.findUsersByAny(req.body)
+router.get('/', async (req,res) => {
+  const result = await UserRepository.findUsersByAny(req.body)
   console.log(result, 'anyresult')
   return res.status(200).send(result);
 })
 
-router.post("/connexion", async (req, res) => {
-  const result = await userServices.connexion(req.body.email, req.body.password)
-  console.log(result, 'result controller')
-  res.status(200).send(result);
-
+router.get('/:id', async (req,res) => {
+  const result = await UserRepository.findUsersById(req.body.id)
+  console.log(result, 'anyresult')
+  return res.status(200).send(result);
 })
 
-router.post('/create', async (req, res) => {
+router.post('/', async (req, res) => {
 
   const options = {
     errors : {
@@ -31,6 +30,7 @@ router.post('/create', async (req, res) => {
         en: { ...enErrors }
     }
   };
+  
   const validationResult = userSchema.validate(req.body, options.messages.en);
   
   if (validationResult.error) { 
@@ -38,27 +38,28 @@ router.post('/create', async (req, res) => {
     return res.status(400).send(validationResult.error.details[0].message);
   }
 
-  const result = await userServices.createUser(req.body)
+  const result = await UserRepository.createUser(req.body)
   
   res.status(201).send(result);
 });
 
-
-
-router.get('/find', async (req,res) => {
-  const result = await userServices.findUsersByAny(req.body) // by all 
-  console.log(req.body.email,"coucou")
-
+router.put('/', (req, res) => {
+  let result = UserRepository.updateAnyUserValues(req.body) 
   res.send(result)
 })
 
-router.put('/modify', (req, res) => {
-  let result = userServices.updateAnyUserValues(req.body) 
-  res.send(result)
-})
-
-router.delete('/delete', (req, res) => {
-  res.send(req);
+router.delete('/:id', async (req, res) => {
+  console.log(req.body)
+  let result = await UserRepository.deleteUserById(req.body)
+  res.send(result);
 });
+
+
+router.post("/connexion", async (req, res) => {
+  const result = await UserRepository.connexion(req.body.email, req.body.password)
+  console.log(result, 'result controller')
+  res.status(200).send(result);
+
+})
 
 module.exports = router;
