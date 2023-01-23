@@ -26,24 +26,24 @@ const jwt = require('jsonwebtoken');
 
 // UTILITY
 
-const connexion = async (email, password) => {
-  console.log(email, password, 'connexion var')
-  const result = findUsersByAny(email)
-  console.log(result, 'result')
-  bcrypt.compare(password, result.password, function(err, res) {
-    if (err){
-      // handle error
-      console.log(err, 'error')
-    }
-    if (res) {
-      // Send JWT
-      console.log("validated")
-    } else {
-      // response is OutgoingMessage object that server response http request
-      return {success: false, message: 'passwords do not match'}
-    }
-  });
-}
+// const connexion = async (email, password) => {
+//   console.log(email, password, 'connexion var')
+//   const result = findUsersByAny(email)
+//   console.log(result, 'result')
+//   bcrypt.compare(password, result.password, function(err, res) {
+//     if (err){
+//       // handle error
+//       console.log(err, 'error')
+//     }
+//     if (res) {
+//       // Send JWT
+//       console.log("validated")
+//     } else {
+//       // response is OutgoingMessage object that server response http request
+//       return {success: false, message: 'passwords do not match'}
+//     }
+//   });
+// }
 
 const emailAlreadyExist = async (email_adress) => {
 
@@ -121,7 +121,7 @@ const createAdmin = async (user) => {
 const regExQuery = async (schema,value) => {
 
   let query = {};
-  console.log(schema,'schemaoption')
+  console.log(value,'schemaoption')
 
   for (const key in value) {
     if (Object.hasOwnProperty.call(value, key)) {
@@ -129,9 +129,9 @@ const regExQuery = async (schema,value) => {
    
       // const rgx = (pattern) => new RegExp(`.*${pattern}.*`);
       // element = rgx(element)
-
+      console.log(key,'key---------')
       if(typeof element === "string"){
-        console.log('qzùmd')
+        console.log(element,'qzùmd--------')
         query[key] =  { $regex: element, $options: "i" } 
       }
       else{
@@ -151,7 +151,7 @@ const findUsersById = async (id) => {
 }
 
 const findUsersByAny = async (user) => {
-  
+
   userRgx = await regExQuery(userSchema,user)
   
   console.log(userRgx,'user plpol')
@@ -197,7 +197,7 @@ module.exports =
   passwordBCrypt,
   createAdmin,
   createUser,
-  connexion,
+  // connexion,
   findUsersById,
   findUsersByAny,
   updateAnyUserValues,

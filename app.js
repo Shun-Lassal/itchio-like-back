@@ -20,6 +20,7 @@ app.use(bodyParser.json());
 
 // anything beginning with "/api" will go into this
 app.use('/user', require('./src/User/UserController'));
+app.use('/auth', require('./src/Auth/AuthController'));
 app.use('/roles', require('./src/Roles/RolesController'));
 
 // ROUTING
