@@ -8,7 +8,9 @@ const userSchema = new Schema({
   email: String,
   phone: String,
   picture: String,
-  role_fk: { type: mongoose.ObjectId, ref: 'Roles' }
+  role_fk: { type: mongoose.ObjectId, ref: 'Roles' },
+  superAdmin: Boolean
+  // mettre super admin
      
 });
 
@@ -38,6 +40,7 @@ const schema = Joi.object({
     .min(2)
     .max(50)
     .required(),
+    superAdmin: Joi.boolean()
        
 })
 

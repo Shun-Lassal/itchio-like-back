@@ -75,9 +75,9 @@ const findRolesByAny = async (role) => {
 
 // UPDATE
 
-const updateAnyRoleValues = async (values) => {
+const updateAnyRoleValues = async (id,values) => {
 
-  const result = await Roles.updateOne({_id: values.id}, {
+  const result = await Roles.updateOne({_id: id}, {
   $set:
     values
   });
