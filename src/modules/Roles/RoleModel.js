@@ -8,7 +8,7 @@ const rolesSchema = new Schema({
   name: String  
 });
 
-const Roles = mongoose.model("Roles", rolesSchema);
+const Role = mongoose.model("Roles", rolesSchema);
 
 const schema = Joi.object({
     owner_fk: Joi.string()
@@ -24,5 +24,5 @@ const schema = Joi.object({
 
 
 
-exports.Roles = Roles;
+exports.Role = Role;
 exports.rolesSchema = schema;

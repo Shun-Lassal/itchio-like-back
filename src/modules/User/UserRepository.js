@@ -1,28 +1,27 @@
-const {User, userSchema} = require('./userModel')
+const Model = require('./UserModel')
 
-const regExQuery = async (schema,value) => {
+const regExQuery = async (value) => {
 
   let query = {};
 
   for (const key in value) {
     if (Object.hasOwnProperty.call(value, key)) {
       let element = value[key];
-   
+    
       if(typeof element === "string"){
         query[key] =  { $regex: element, $options: "i" } 
       }
       else{
         query[key] =  element 
       }
-      console.log(query, 'query final')
     }
   };
   return query
 }
 
-const findUsersById = async (id) => {
+const findUserById = async (id) => {
 
-  const result = await User.findById(id) 
+  const result = await Model.User.findById(id) 
   return result 
 }
 
@@ -31,22 +30,28 @@ const findUserByEmail = async  (email) => {
 }
 
 const findUsersByAny = async (user) => {
+  const {limit, page} = user
 
-  userRgx = await regExQuery(userSchema,user)
-  
-  const result = await User.find(
+  userRgx = await regExQuery(user)
+  const result = await Model.User.find(
       userRgx
-    )
+    ).limit(limit * 1)
+    .skip((page - 1) * limit)
+    .exec();
 
+    const count = await Model.User.countDocuments();
 
-  return result
+  return {
+    users: result,
+    count: count
+  };
 }
 
 // UPDATE
 
 const updateAnyUserValues = async (id,values) => {
 
-  const result = await User.updateOne({_id: id}, {
+  const result = await Model.User.updateOne({_id: id}, {
   $set:
     values
   });
@@ -55,13 +60,13 @@ const updateAnyUserValues = async (id,values) => {
 }
 
 const deleteUserById = (id) => {
-  const result = User.deleteOne(id)
+  const result = Model.User.deleteOne(id)
   return result
 }
 
 module.exports =
  {
-  findUsersById,
+  findUserById,
   findUsersByAny,
   findUserByEmail,
   updateAnyUserValues,

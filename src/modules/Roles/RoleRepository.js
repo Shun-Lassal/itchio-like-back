@@ -1,10 +1,12 @@
-const {Roles, rolesSchema} = require('./RolesModel')
+// const {Roles, rolesSchema} = require('./RoleModel')
+
+const Model= require('./RoleModel')
 
 // UTILITY
 
 const roleAlreadyExist = async (role) => {
 
-  const result = await Roles.find({name: role})
+  const result = await Model.Role.find({name: role})
 
   if(result.length > 0)
     return true 
@@ -18,7 +20,7 @@ const createRole = async (role) => {
 
   const resultRoleName = await roleAlreadyExist(role.name)
   let test = {...role}
-  const doc = new Roles(test)
+  const doc = new Model.Role(test)
   if(!resultRoleName){
     const
      result = await doc.save(); 
@@ -32,7 +34,7 @@ const createRole = async (role) => {
 
 // GET
 
-const regExQuery = async (schema,value) => {
+const regExQuery = async (value) => {
 
   let query = {};
 
@@ -46,7 +48,6 @@ const regExQuery = async (schema,value) => {
       else{
         query[key] =  element 
       }
-      console.log(query, 'query final')
     }
   };
   return query
@@ -54,40 +55,45 @@ const regExQuery = async (schema,value) => {
 
 const findRoleById = async (id) => {
 
-  const result = await Roles.findById(id) 
+  const result = await Model.Role.findById(id) 
   
   return result 
 }
 
 const findRolesByAny = async (role) => {
   
-  roleRgx = await regExQuery(rolesSchema,role)
+  const {limit, page} = role
+
+  roleRgx = await regExQuery(role)
   
-  console.log(roleRgx,'role plpol')
-  const result = await Roles.find(
+  const result = await Model.Role.find(
       roleRgx
-    )
+    ).limit(limit * 1)
+    .skip((page - 1) * limit)
+    .exec();
 
-    console.log(result, 'final result')
+    const count = await Model.Role.countDocuments();
 
-  return result
+  return {
+    users: result,
+    count: count
+  };
 }
 
 // UPDATE
 
 const updateAnyRoleValues = async (id,values) => {
 
-  const result = await Roles.updateOne({_id: id}, {
+  const result = await Model.Role.updateOne({_id: id}, {
   $set:
     values
   });
 
-  console.log(result, "update result")
   return [result, values]
 }
 
 const deleteRoleById = (id) => {
-  const result = Roles.deleteOne(id)
+  const result = Model.Role.deleteOne(id)
   return result
 }
 

@@ -11,7 +11,6 @@ const userSchema = new Schema({
   role_fk: { type: mongoose.ObjectId, ref: 'Roles' },
   superAdmin: Boolean
   // mettre super admin
-     
 });
 
 const User = mongoose.model("Users", userSchema);
