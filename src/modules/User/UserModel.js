@@ -40,7 +40,6 @@ const schema = Joi.object({
     .max(50)
     .required(),
     superAdmin: Joi.boolean()
-       
 })
 
 

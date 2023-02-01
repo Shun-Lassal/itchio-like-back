@@ -60,7 +60,7 @@ const updateAnyUserValues = async (id,values) => {
 }
 
 const deleteUserById = (id) => {
-  const result = Model.User.deleteOne(id)
+  const result = Model.User.deleteOne({_id:id})
   return result
 }
 
