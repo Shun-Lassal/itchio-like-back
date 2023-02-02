@@ -1,16 +1,19 @@
-const Model = require('./UserModel')
-const Controller = require('./UserController')
-const Repository = require('./UserRepository')
+const Model = require("./UserModel");
+const Controller = require("./UserController");
+const Repository = require("./UserRepository");
+const Seed = require("./UserSeed");
 
 const provider = {
-  Endpoint: '/users',
+  Endpoint: "/users",
   Model,
   Controller,
-  Repository
-}
+  Repository,
+  Seed,
+};
 
 module.exports = {
   Model,
   Repository,
-  provider
-}
+  provider,
+  Seed,
+};

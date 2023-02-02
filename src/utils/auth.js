@@ -1,18 +1,28 @@
-require('dotenv').config();
+require("dotenv").config();
 const jwt = require("jsonwebtoken");
 
-module.exports = (req, res, next) => {
-  let token = req.header('authorization');
-  token = token.substring(7)
+const Logger = require("../utils/logger");
 
-  if (!token) return res.status(401).send("NOP NOP NOP, NOT AUTHORIZED");
+module.exports = (req, res, next) => {
+  Logger.http(req, res);
+  let token = req.header("authorization");
+
+  if (token) {
+    token = token.substring(7);
+  }
+
+  if (!token) {
+    Logger.unauthorized();
+    return res.status(401).send("");
+  }
 
   try {
     const decoded = jwt.verify(token, process.env.PRIVATE_KEY);
+
     req.user = decoded;
-    
+    Logger.success();
     next();
   } catch (ex) {
-    res.status(400).send("NOP INVALIDE TOKEN");
+    Logger.invalidToken(), res.status(400).send("");
   }
 };

@@ -1,70 +1,61 @@
-var router = require("express").Router();
+const Router = require("express").Router();
 const Repository = require("./UserRepository");
-const logger = require("../../utils/logger");
+const Logger = require("../../utils/Logger");
+const Auth = require("../../utils/Auth");
 
-router.get("/", async (req, res) => {
-  logger.custom.http(
-    `${new Date().toLocaleString()} | ${req.baseUrl}${req.url} `
-  );
+Router.get("/", Auth, async (req, res) => {
+  Logger.http(req, res);
 
   try {
     const result = await Repository.findUsersByAny(req.body);
-    logger.custom.success("Request response received successfully");
+    Logger.success();
     return res.status(200).send(result);
   } catch (error) {
-    logger.custom.error("Request ended unsuccessfully.");
-
+    Logger.error();
     return res.status(400).send();
   }
 });
 
-router.get("/:id", async (req, res) => {
-  logger.custom.http(
-    `${new Date().toLocaleString()} | ${req.baseUrl}${req.url} `
-  );
+Router.get("/:id", Auth, async (req, res) => {
+  Logger.http(req, res);
 
   try {
     const result = await Repository.findUserById(req.params.id);
-    logger.custom.success("Request response received successfully");
+    Logger.success();
     return res.status(200).send(result);
   } catch (error) {
-    logger.custom.error("Request ended unsuccessfully.");
-
+    Logger.error();
     return res.status(400).send();
   }
 });
 
-router.put("/:id", async (req, res) => {
-  logger.custom.http(
-    `${new Date().toLocaleString()} | ${req.baseUrl}${req.url} `
-  );
+Router.put("/:id", Auth, async (req, res) => {
+  Logger.http(req, res);
 
   try {
     let result = await Repository.updateAnyUserValues(req.params.id, req.body);
-    logger.custom.success("Request response received successfully");
+    Logger.success();
     return res.status(201).send(result);
   } catch (error) {
-    logger.custom.error("Request ended unsuccessfully.");
+    Logger.error();
 
     return res.status(400).send();
   }
 });
 
-router.delete("/:id", async (req, res) => {
-  logger.custom.http(
-    `${new Date().toLocaleString()} | ${req.baseUrl}${req.url} `
-  );
+Router.delete("/:id", Auth, async (req, res) => {
+  Logger.http(req, res);
 
   try {
     let result = await Repository.deleteUserById(req.params.id);
-    logger.custom.success("Request response received successfully");
+    Logger.success();
 
     return res.status(204).send(result);
   } catch (error) {
-    logger.custom.error("Request ended unsuccessfully.");
+    Logger.error();
 
     return res.status(400).send();
   }
 });
 
-module.exports = router;
+module.exports = Router;

@@ -1,13 +1,9 @@
-const Auth = require('./Auth/AuthModule')
-const Role = require('./Roles/RoleModule')
-const User = require('./User/UserModule');
+const Auth = require("./Auth/AuthModule");
+const Role = require("./Roles/RoleModule");
+const User = require("./User/UserModule");
 
-const core = [
-  Auth,
-  Role,
-  User,
-]
+const core = [Auth, Role, User];
 
 module.exports = {
-  core
-} 
+  core,
+};

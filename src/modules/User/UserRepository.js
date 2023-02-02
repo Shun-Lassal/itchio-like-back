@@ -1,75 +1,70 @@
-const Model = require('./UserModel')
+const Model = require("./UserModel");
 
 const regExQuery = async (value) => {
-
   let query = {};
 
   for (const key in value) {
     if (Object.hasOwnProperty.call(value, key)) {
       let element = value[key];
-    
-      if(typeof element === "string"){
-        query[key] =  { $regex: element, $options: "i" } 
-      }
-      else{
-        query[key] =  element 
+
+      if (typeof element === "string") {
+        query[key] = { $regex: element, $options: "i" };
+      } else {
+        query[key] = element;
       }
     }
-  };
-  return query
-}
+  }
+  return query;
+};
 
 const findUserById = async (id) => {
+  const result = await Model.User.findById(id);
+  return result;
+};
 
-  const result = await Model.User.findById(id) 
-  return result 
-}
-
-const findUserByEmail = async  (email) => {
-  return await User.findOne({ email })
-}
+const findUserByEmail = async (email) => {
+  return await Model.User.findOne({ email });
+};
 
 const findUsersByAny = async (user) => {
-  const {limit, page} = user
+  const { limit, page } = user;
 
-  userRgx = await regExQuery(user)
-  const result = await Model.User.find(
-      userRgx
-    ).limit(limit * 1)
+  const userRgx = await regExQuery(user);
+  const result = await Model.User.find(userRgx)
+    .limit(limit * 1)
     .skip((page - 1) * limit)
     .exec();
 
-    const count = await Model.User.countDocuments();
+  const count = await Model.User.countDocuments();
 
   return {
     users: result,
-    count: count
+    count: count,
   };
-}
+};
 
 // UPDATE
 
-const updateAnyUserValues = async (id,values) => {
+const updateAnyUserValues = async (id, values) => {
+  const result = await Model.User.updateOne(
+    { _id: id },
+    {
+      $set: values,
+    }
+  );
 
-  const result = await Model.User.updateOne({_id: id}, {
-  $set:
-    values
-  });
-
-  return result
-}
+  return result;
+};
 
 const deleteUserById = (id) => {
-  const result = Model.User.deleteOne({_id:id})
-  return result
-}
+  const result = Model.User.deleteOne({ _id: id });
+  return result;
+};
 
-module.exports =
- {
+module.exports = {
   findUserById,
   findUsersByAny,
   findUserByEmail,
   updateAnyUserValues,
-  deleteUserById
-}
-
+  deleteUserById,
+};
