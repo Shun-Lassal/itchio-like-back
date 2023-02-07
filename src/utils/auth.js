@@ -18,7 +18,7 @@ module.exports = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.PRIVATE_KEY);
-
+    console.log(decoded, "payload");
     req.user = decoded;
     Logger.success();
     next();

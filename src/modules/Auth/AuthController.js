@@ -33,7 +33,6 @@ router.post("/login", async (req, res) => {
     return res.status(200).send(result);
   } catch (error) {
     Logger.error();
-
     return res.status(400).send();
   }
 });

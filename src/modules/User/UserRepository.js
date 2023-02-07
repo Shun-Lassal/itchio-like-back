@@ -30,6 +30,7 @@ const findUsersByAny = async (user) => {
   const { limit, page } = user;
 
   const userRgx = await regExQuery(user);
+
   const result = await Model.User.find(userRgx)
     .limit(limit * 1)
     .skip((page - 1) * limit)

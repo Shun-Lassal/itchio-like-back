@@ -10,12 +10,9 @@ const register = async (user) => {
   let credentials = { email: user.email, password: user.password };
   let hashedPassword = await passwordBCrypt(credentials.password);
 
-  const defaultRole = "63cd45b1012bd0bc67e13ae6"; // a set a chaque début de projet
-
   const userDocument = new Model.User({
     email: credentials.email,
     password: hashedPassword,
-    role_fk: defaultRole,
     superAdmin: false,
   });
   const resultEmail = await Repository.findUsersByAny({
@@ -36,18 +33,30 @@ const register = async (user) => {
 
 const login = async (user) => {
   let credentials = { email: user.email, password: user.password };
-  let [{ _id, email, role_fk, password }] = await Repository.findUsersByAny({
+  let { users: results } = await Repository.findUsersByAny({
     email: credentials.email,
   });
 
-  if (await bcrypt.compare(credentials.password, password)) {
+  if (await bcrypt.compare(credentials.password, results[0].password)) {
     const token = jwt.sign(
-      { id: _id, email: email, role: role_fk },
+      { id: results[0]._id, email: results[0].email },
       process.env.PRIVATE_KEY
     );
-    return { status: 200, message: "Connexion établie", result: token };
+    const payload = results[0]._id;
+    return {
+      status: 200,
+      message: "Connexion établie",
+      result: {
+        token: token,
+        id: payload,
+      },
+    };
   } else {
-    return { status: 403, message: "Unauthorized", result: {} };
+    return {
+      status: 403,
+      message: "Les identifiants ne correspondent pas",
+      result: {},
+    };
   }
 };
 
