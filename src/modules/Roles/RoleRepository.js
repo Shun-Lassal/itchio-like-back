@@ -20,9 +20,13 @@ const createRole = async (role) => {
   if (!resultRoleName) {
     const result = await doc.save();
 
-    return [["201", "Nouveau role créer avec succès"], result];
+    return {
+      status: "201",
+      message: "Nouveau role créer avec succès",
+      result: result,
+    };
   } else {
-    return ["403", "Role déjà utilisé"];
+    return { status: "403", message: "Role déjà utilisé" };
   }
 };
 
@@ -64,7 +68,7 @@ const findRolesByAny = async (role) => {
   const count = await Model.Role.countDocuments();
 
   return {
-    users: result,
+    result: result,
     count: count,
   };
 };
@@ -79,7 +83,7 @@ const updateAnyRoleValues = async (id, values) => {
     }
   );
 
-  return [result, values];
+  return { result: result, values: values };
 };
 
 const deleteRoleById = (id) => {

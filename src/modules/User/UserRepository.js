@@ -39,7 +39,7 @@ const findUsersByAny = async (user) => {
   const count = await Model.User.countDocuments();
 
   return {
-    users: result,
+    result: result,
     count: count,
   };
 };

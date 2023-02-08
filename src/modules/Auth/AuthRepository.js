@@ -75,9 +75,9 @@ const changePassword = async (values) => {
     user.password = await passwordBCrypt(values.newPassword);
     await Repository.updateAnyUserValues(user.id, user);
 
-    return true;
+    return { state: true, message: "Mot de passe changé avec success" };
   } else {
-    return false;
+    return { state: false, message: "Nouveau mot de passe incorrect" };
   }
 };
 

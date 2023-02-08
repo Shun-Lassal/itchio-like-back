@@ -43,7 +43,7 @@ router.put("/changePassword", Auth, async (req, res) => {
   try {
     let result = await Repository.changePassword(req.body);
 
-    if (result) {
+    if (result.state) {
       Logger.success();
       return res.status(200).send(result);
     } else {
